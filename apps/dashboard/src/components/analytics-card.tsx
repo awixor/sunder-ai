@@ -1,5 +1,3 @@
-"use client";
-
 import { memo } from "react";
 import { Shield, TrendingUp } from "lucide-react";
 import type { Analytics } from "@/types";

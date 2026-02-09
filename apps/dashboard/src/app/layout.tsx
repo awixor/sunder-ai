@@ -4,7 +4,6 @@ import "./globals.css";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { SunderProvider } from "@/context/sunder-context";
-import { Header } from "@/components/header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,8 +16,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sunder AI - Local-First Privacy Shield",
-  description: "Protect your sensitive data before sharing with AI",
+  title: "Sunder - Local-First AI Privacy Firewall",
+  description:
+    "The local-first privacy firewall that scrubs PII from AI prompts before they ever leave your browser. Fast. Private. Open Source.",
 };
 
 export default function RootLayout({
@@ -33,16 +33,11 @@ export default function RootLayout({
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
-          <SunderProvider>
-            <div className="min-h-screen bg-zinc-50 dark:bg-black">
-              <Header />
-              <main className="max-w-5xl mx-auto p-6 md:p-12">{children}</main>
-            </div>
-          </SunderProvider>
+          <SunderProvider>{children}</SunderProvider>
         </ThemeProvider>
       </body>
     </html>
