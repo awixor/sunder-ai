@@ -1,7 +1,8 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Shield, Github, Zap, ChevronRight } from "lucide-react";
+import { Shield, Zap, ChevronRight } from "lucide-react";
+import { Github } from "@/components/icons";
 import Link from "next/link";
 
 // Sample data for the scrubbing terminal demo

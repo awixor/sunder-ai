@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Github, BookOpen, Bomb, Shield } from "lucide-react";
+import { BookOpen, Bomb, Shield } from "lucide-react";
+import { Github } from "@/components/icons";
 import Link from "next/link";
 
 const footerLinks = [
