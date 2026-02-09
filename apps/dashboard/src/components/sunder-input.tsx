@@ -12,7 +12,7 @@ export function SunderInput({
   placeholder,
 }: SunderInputProps) {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full p-2">
       <h2 className="text-xl font-bold mb-4 text-zinc-900 dark:text-zinc-100">
         Input
       </h2>
