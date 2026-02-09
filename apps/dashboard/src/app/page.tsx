@@ -1,19 +1,33 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { useState } from "react";
-import { Heartbeat } from "@/components/Heartbeat";
-import { SplitPane } from "@/components/SplitPane";
-import { SunderInput } from "@/components/SunderInput";
-import { SunderOutput } from "@/components/SunderOutput";
-import { useSunder } from "@/hooks/useSunder";
+import { useState, useEffect } from "react";
+import { Heartbeat } from "@/components/heartbeat";
+import { SplitPane } from "@/components/split-pane";
+import { SunderInput } from "@/components/sunder-input";
+import { SunderOutput } from "@/components/sunder-output";
+import { useSunder } from "@/hooks/use-sunder";
 
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { VaultTable } from "@/components/vault-table";
+import { PanicButton } from "@/components/panic-button";
+import { AutoRevealToggle } from "@/components/auto-reveal-toggle";
 
 export default function Home() {
   const [input, setInput] = useState("");
-  const { engine, health } = useSunder();
+  const [processedText, setProcessedText] = useState("");
+  const [autoReveal, setAutoReveal] = useState(false);
+  const { engine, health, map, protect, reveal, clear } = useSunder();
 
-  const sanitizedText = engine ? engine.protect(input) : input;
+  useEffect(() => {
+    if (engine) {
+      setProcessedText(protect(input));
+    } else {
+      setProcessedText(input);
+    }
+  }, [input, engine]);
+
+  const finalText = autoReveal ? reveal(processedText) : processedText;
 
   return (
     <main className="min-h-screen bg-zinc-50 p-12 dark:bg-black ">
@@ -26,16 +40,47 @@ export default function Home() {
             <p className="text-slate-500">Local-First Privacy Shield v0.1.0</p>
           </div>
           <div className="flex items-center gap-4">
+            <AutoRevealToggle enabled={autoReveal} onToggle={setAutoReveal} />
+            <PanicButton
+              onPanic={() => {
+                clear();
+                setInput("");
+              }}
+            />
+            <div className="w-px h-6 bg-zinc-200 dark:bg-zinc-800" />
             <Heartbeat status={health} />
             <ThemeToggle />
           </div>
         </header>
-      </div>
 
-      <SplitPane
-        left={<SunderInput value={input} onChange={setInput} />}
-        right={<SunderOutput value={sanitizedText} />}
-      />
+        <section>
+          <SplitPane
+            left={
+              <SunderInput
+                value={input}
+                onChange={setInput}
+                placeholder="Paste sensitive data here (emails, credit cards)..."
+              />
+            }
+            right={<SunderOutput value={finalText} />}
+          />
+        </section>
+
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+              Identity Vault{" "}
+              <span className="text-zinc-400 font-normal ml-2 text-sm">
+                (Local Memory Only)
+              </span>
+            </h2>
+            <div className="text-xs text-zinc-500 font-mono">
+              {map.size} Active Identities
+            </div>
+          </div>
+          <VaultTable map={map} />
+        </section>
+      </div>
     </main>
   );
 }
