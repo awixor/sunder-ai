@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { Heartbeat } from "@/components/heartbeat";
 import { SplitPane } from "@/components/split-pane";
 import { SunderInput } from "@/components/sunder-input";
@@ -13,16 +13,22 @@ import { PanicButton } from "@/components/panic-button";
 import { AutoRevealToggle } from "@/components/auto-reveal-toggle";
 import { RuleConfig } from "@/components/rule-config";
 import { CustomRules } from "@/components/custom-rules";
+import { AnalyticsCard } from "@/components/analytics-card";
+import { RiskBreakdown } from "@/components/risk-breakdown";
+
+const DEBOUNCE_MS = 150;
 
 export default function Home() {
   const [input, setInput] = useState("");
   const [processedText, setProcessedText] = useState("");
   const [autoReveal, setAutoReveal] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const {
     health,
     map,
     rules,
     config,
+    analytics,
     protect,
     reveal,
     clear,
@@ -35,9 +41,16 @@ export default function Home() {
   const handleInputChange = useCallback(
     (newInput: string) => {
       setInput(newInput);
-      const protected_ = protect(newInput);
-      setProcessedText(protected_);
-      setTimeout(() => refreshMap(), 0);
+
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+
+      debounceRef.current = setTimeout(() => {
+        const protected_ = protect(newInput);
+        setProcessedText(protected_);
+        refreshMap();
+      }, DEBOUNCE_MS);
     },
     [protect, refreshMap],
   );
@@ -80,6 +93,16 @@ export default function Home() {
             }
             right={<SunderOutput value={finalText} />}
           />
+        </section>
+
+        <section className="space-y-4">
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+            Leak Analytics
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <AnalyticsCard analytics={analytics} />
+            <RiskBreakdown analytics={analytics} />
+          </div>
         </section>
 
         <section className="space-y-4">

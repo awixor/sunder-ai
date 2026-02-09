@@ -17,10 +17,30 @@ interface CustomRule {
   replacement: string;
 }
 
+interface Analytics {
+  total: number;
+  email: number;
+  phone: number;
+  ip_addr: number;
+  path: number;
+  secret: number;
+  custom: number;
+}
+
 const DEFAULT_CONFIG: VaultConfig = {
   identity: true,
   contact: true,
   technical: true,
+};
+
+const DEFAULT_ANALYTICS: Analytics = {
+  total: 0,
+  email: 0,
+  phone: 0,
+  ip_addr: 0,
+  path: 0,
+  secret: 0,
+  custom: 0,
 };
 
 export function useSunder() {
@@ -28,6 +48,7 @@ export function useSunder() {
   const [map, setMap] = useState<Map<string, string>>(new Map());
   const [rules, setRules] = useState<CustomRule[]>([]);
   const [config, setConfig] = useState<VaultConfig>(DEFAULT_CONFIG);
+  const [analytics, setAnalytics] = useState<Analytics>(DEFAULT_ANALYTICS);
   const engineRef = useRef<SunderVault | null>(null);
 
   const syncState = useCallback(() => {
@@ -42,9 +63,11 @@ export function useSunder() {
       });
 
       const rawRules = vault.get_rules();
+      const rawAnalytics = vault.get_analytics();
 
       setMap(newMap);
       setRules(rawRules || []);
+      setAnalytics(rawAnalytics || DEFAULT_ANALYTICS);
     } catch (e) {
       console.error("Failed to sync state:", e);
     }
@@ -148,6 +171,7 @@ export function useSunder() {
       map,
       rules,
       config,
+      analytics,
       protect,
       reveal,
       clear,
@@ -161,6 +185,7 @@ export function useSunder() {
       map,
       rules,
       config,
+      analytics,
       protect,
       reveal,
       clear,

@@ -30,6 +30,17 @@ struct TokenCounters {
     custom: usize,
 }
 
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct Analytics {
+    pub total: usize,
+    pub email: usize,
+    pub phone: usize,
+    pub ip_addr: usize,
+    pub path: usize,
+    pub secret: usize,
+    pub custom: usize,
+}
+
 #[wasm_bindgen]
 pub struct SunderVault {
     storage: HashMap<String, String>,
@@ -204,6 +215,20 @@ impl SunderVault {
             map.set(&JsValue::from_str(token), &JsValue::from_str(value));
         }
         map.into()
+    }
+
+    pub fn get_analytics(&self) -> JsValue {
+        let analytics = Analytics {
+            total: self.counters.email + self.counters.phone + self.counters.ip_addr + 
+                   self.counters.path + self.counters.secret + self.counters.custom,
+            email: self.counters.email,
+            phone: self.counters.phone,
+            ip_addr: self.counters.ip_addr,
+            path: self.counters.path,
+            secret: self.counters.secret,
+            custom: self.counters.custom,
+        };
+        serde_wasm_bindgen::to_value(&analytics).unwrap()
     }
 
     pub fn clear_vault(&mut self) {
