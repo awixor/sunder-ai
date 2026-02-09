@@ -1,0 +1,39 @@
+# Node.js
+node_modules/
+dist/
+build/
+.turbo/
+.cache/
+
+# Next.js
+.next/
+out/
+
+# Vite
+dist-ssr/
+*.local
+
+# Rust
+target/
+**/*.rs.bk
+
+# Sunder Core WASM
+packages/sunder-core/pkg/
+
+# System
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editors
+.vscode/
