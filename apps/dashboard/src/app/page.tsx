@@ -1,9 +1,32 @@
+"use client";
+
+import { useState } from "react";
+import { SplitPane } from "@/components/SplitPane";
+import { SunderInput } from "@/components/SunderInput";
+import { SunderOutput } from "@/components/SunderOutput";
+import { useSunder } from "@/hooks/useSunder";
+
 export default function Home() {
+  const [input, setInput] = useState("");
+  const { engine } = useSunder();
+
+  const sanitizedText = engine ? engine.protect(input) : input;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        Hello world
-      </main>
-    </div>
+    <main className="min-h-screen bg-zinc-50 p-12 bg-white dark:bg-black ">
+      <div className="max-w-5xl mx-auto space-y-8 ">
+        <header>
+          <h1 className="text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
+            SUNDER <span className="text-blue-600">AI</span>
+          </h1>
+          <p className="text-slate-500">Local-First Privacy Shield v0.1.0</p>
+        </header>
+      </div>
+
+      <SplitPane
+        left={<SunderInput value={input} onChange={setInput} />}
+        right={<SunderOutput value={sanitizedText} />}
+      />
+    </main>
   );
 }
