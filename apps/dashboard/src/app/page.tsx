@@ -12,12 +12,26 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { VaultTable } from "@/components/vault-table";
 import { PanicButton } from "@/components/panic-button";
 import { AutoRevealToggle } from "@/components/auto-reveal-toggle";
+import { RuleConfig } from "@/components/rule-config";
+import { CustomRules } from "@/components/custom-rules";
 
 export default function Home() {
   const [input, setInput] = useState("");
   const [processedText, setProcessedText] = useState("");
   const [autoReveal, setAutoReveal] = useState(false);
-  const { engine, health, map, protect, reveal, clear } = useSunder();
+  const {
+    engine,
+    health,
+    map,
+    rules,
+    config,
+    protect,
+    reveal,
+    clear,
+    configure,
+    addRule,
+    removeRule,
+  } = useSunder();
 
   useEffect(() => {
     if (engine) {
@@ -25,7 +39,7 @@ export default function Home() {
     } else {
       setProcessedText(input);
     }
-  }, [input, engine]);
+  }, [input, engine, config, rules]);
 
   const finalText = autoReveal ? reveal(processedText) : processedText;
 
@@ -63,6 +77,18 @@ export default function Home() {
               />
             }
             right={<SunderOutput value={finalText} />}
+          />
+        </section>
+
+        <section className="space-y-4">
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+            Rule Engine
+          </h2>
+          <RuleConfig config={config} onConfigChange={configure} />
+          <CustomRules
+            rules={rules}
+            onAddRule={addRule}
+            onRemoveRule={removeRule}
           />
         </section>
 
