@@ -13,12 +13,12 @@ import {
   X,
 } from "lucide-react";
 import { useSunder } from "@/context/sunder-context";
-import type { AIServiceConfig } from "@/types/ai";
+import { AIProvider, DEFAULT_MODELS, type AIServiceConfig } from "@/types/ai";
 
 export default function ChatPage() {
   const [config, setConfig] = useState<AIServiceConfig>({
-    provider: "openai",
-    model: "gpt-4o-mini",
+    provider: AIProvider.Ollama,
+    model: DEFAULT_MODELS[AIProvider.Ollama],
   });
   const [showConfig, setShowConfig] = useState(false);
   const [text, setText] = useState("");
@@ -146,27 +146,52 @@ export default function ChatPage() {
       {showConfig && (
         <div className="mb-4 p-4 border border-zinc-200 dark:border-zinc-800 rounded-lg bg-zinc-50 dark:bg-zinc-900/50 space-y-3">
           <div>
+            <label className="block text-xs text-zinc-500 mb-1">Provider</label>
+            <select
+              value={config.provider}
+              onChange={(e) => {
+                const provider = e.target.value as AIProvider;
+                setConfig({
+                  ...config,
+                  provider,
+                  model: DEFAULT_MODELS[provider],
+                });
+              }}
+              className="w-full px-3 py-2 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm"
+            >
+              <option value={AIProvider.OpenAI}>OpenAI</option>
+              <option value={AIProvider.Grok}>Grok (xAI)</option>
+              <option value={AIProvider.Ollama}>Ollama (Local - Free)</option>
+            </select>
+          </div>
+          <div>
             <label className="block text-xs text-zinc-500 mb-1">Model</label>
             <input
               type="text"
               value={config.model || ""}
               onChange={(e) => setConfig({ ...config, model: e.target.value })}
-              placeholder="gpt-4o-mini"
+              placeholder={DEFAULT_MODELS[config.provider]}
               className="w-full px-3 py-2 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm"
             />
           </div>
-          <div>
-            <label className="block text-xs text-zinc-500 mb-1">
-              API Key (optional - uses server env if empty)
-            </label>
-            <input
-              type="password"
-              value={config.apiKey || ""}
-              onChange={(e) => setConfig({ ...config, apiKey: e.target.value })}
-              placeholder="sk-..."
-              className="w-full px-3 py-2 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm"
-            />
-          </div>
+          {config.provider !== AIProvider.Ollama && (
+            <div>
+              <label className="block text-xs text-zinc-500 mb-1">
+                API Key (optional - uses server env if empty)
+              </label>
+              <input
+                type="password"
+                value={config.apiKey || ""}
+                onChange={(e) =>
+                  setConfig({ ...config, apiKey: e.target.value })
+                }
+                placeholder={
+                  config.provider === AIProvider.Grok ? "xai-..." : "sk-..."
+                }
+                className="w-full px-3 py-2 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm"
+              />
+            </div>
+          )}
         </div>
       )}
 

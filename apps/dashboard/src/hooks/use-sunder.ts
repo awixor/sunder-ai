@@ -71,8 +71,17 @@ export function useSunderHook() {
 
   const protect = useCallback((input: string): string => {
     const vault = engineRef.current;
-    if (!vault) return input;
-    return vault.protect(input);
+    if (!vault) {
+      console.warn("[Sunder] protect called but vault not initialized");
+      return input;
+    }
+    const result = vault.protect(input);
+    console.log("[Sunder] protect:", {
+      input,
+      result,
+      changed: input !== result,
+    });
+    return result;
   }, []);
 
   const refreshMap = useCallback(() => {
