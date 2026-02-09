@@ -2,16 +2,7 @@
 
 import { memo } from "react";
 import { Shield, TrendingUp } from "lucide-react";
-
-interface Analytics {
-  total: number;
-  email: number;
-  phone: number;
-  ip_addr: number;
-  path: number;
-  secret: number;
-  custom: number;
-}
+import type { Analytics } from "@/types";
 
 interface AnalyticsCardProps {
   analytics: Analytics;

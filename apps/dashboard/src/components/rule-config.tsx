@@ -2,14 +2,7 @@
 
 import { memo, useCallback } from "react";
 import { User, Phone, Key } from "lucide-react";
-
-type ConfigKey = "identity" | "contact" | "technical";
-
-interface VaultConfig {
-  identity: boolean;
-  contact: boolean;
-  technical: boolean;
-}
+import type { VaultConfig, ConfigKey } from "@/types";
 
 interface RuleConfigProps {
   config: VaultConfig;

@@ -2,48 +2,16 @@
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { SunderVault } from "@sunder/core";
+import type {
+  SunderHealth,
+  VaultConfig,
+  CustomRule,
+  Analytics,
+  ConfigKey,
+} from "@/types";
+import { DEFAULT_CONFIG, DEFAULT_ANALYTICS } from "@/types";
 
-type SunderHealth = "loading" | "active" | "error";
-type ConfigKey = "identity" | "contact" | "technical";
-
-interface VaultConfig {
-  identity: boolean;
-  contact: boolean;
-  technical: boolean;
-}
-
-interface CustomRule {
-  pattern: string;
-  replacement: string;
-}
-
-interface Analytics {
-  total: number;
-  email: number;
-  phone: number;
-  ip_addr: number;
-  path: number;
-  secret: number;
-  custom: number;
-}
-
-const DEFAULT_CONFIG: VaultConfig = {
-  identity: true,
-  contact: true,
-  technical: true,
-};
-
-const DEFAULT_ANALYTICS: Analytics = {
-  total: 0,
-  email: 0,
-  phone: 0,
-  ip_addr: 0,
-  path: 0,
-  secret: 0,
-  custom: 0,
-};
-
-export function useSunder() {
+export function useSunderHook() {
   const [health, setHealth] = useState<SunderHealth>("loading");
   const [map, setMap] = useState<Map<string, string>>(new Map());
   const [rules, setRules] = useState<CustomRule[]>([]);

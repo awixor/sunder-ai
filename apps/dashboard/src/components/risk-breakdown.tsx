@@ -2,16 +2,7 @@
 
 import { memo, useMemo } from "react";
 import { PieChart } from "lucide-react";
-
-interface Analytics {
-  total: number;
-  email: number;
-  phone: number;
-  ip_addr: number;
-  path: number;
-  secret: number;
-  custom: number;
-}
+import type { Analytics } from "@/types";
 
 interface RiskBreakdownProps {
   analytics: Analytics;
@@ -28,7 +19,7 @@ export const RiskBreakdown = memo(function RiskBreakdown({
   analytics,
 }: RiskBreakdownProps) {
   const slices = useMemo((): SliceData[] => {
-    const total = analytics.total || 1; // Prevent division by zero
+    const total = analytics.total || 1;
     const data = [
       { label: "Emails", value: analytics.email, color: "#3b82f6" },
       { label: "Phones", value: analytics.phone, color: "#8b5cf6" },
@@ -89,7 +80,6 @@ export const RiskBreakdown = memo(function RiskBreakdown({
       </div>
 
       <div className="flex items-center gap-6">
-        {/* Donut Chart */}
         <div
           className="w-32 h-32 rounded-full shrink-0 relative"
           style={{ background: gradientStops }}
@@ -101,7 +91,6 @@ export const RiskBreakdown = memo(function RiskBreakdown({
           </div>
         </div>
 
-        {/* Legend */}
         <div className="flex-1 space-y-2">
           {slices.map((slice) => (
             <div key={slice.label} className="flex items-center gap-2">

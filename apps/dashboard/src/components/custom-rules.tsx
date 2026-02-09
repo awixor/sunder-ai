@@ -2,13 +2,7 @@
 
 import { useState, memo, useCallback } from "react";
 import { Plus, Trash, Shield, Lock, ChevronDown } from "lucide-react";
-
-export type TokenCategory = "PROJECT" | "PERSON" | "ORG" | "LOCATION";
-
-export interface CustomRule {
-  pattern: string;
-  replacement: string;
-}
+import type { TokenCategory, CustomRule } from "@/types";
 
 interface CustomRulesProps {
   rules: CustomRule[];
