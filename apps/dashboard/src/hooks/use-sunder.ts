@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { SunderVault } from "@sunder/core";
 
 type SunderHealth = "loading" | "active" | "error";
@@ -17,14 +17,6 @@ interface CustomRule {
   replacement: string;
 }
 
-interface SunderState {
-  engine: SunderVault | null;
-  health: SunderHealth;
-  map: Map<string, string>;
-  rules: CustomRule[];
-  config: VaultConfig;
-}
-
 const DEFAULT_CONFIG: VaultConfig = {
   identity: true,
   contact: true,
@@ -32,30 +24,27 @@ const DEFAULT_CONFIG: VaultConfig = {
 };
 
 export function useSunder() {
-  const [state, setState] = useState<SunderState>({
-    engine: null,
-    health: "loading",
-    map: new Map(),
-    rules: [],
-    config: DEFAULT_CONFIG,
-  });
+  const [health, setHealth] = useState<SunderHealth>("loading");
+  const [map, setMap] = useState<Map<string, string>>(new Map());
+  const [rules, setRules] = useState<CustomRule[]>([]);
+  const [config, setConfig] = useState<VaultConfig>(DEFAULT_CONFIG);
+  const engineRef = useRef<SunderVault | null>(null);
 
-  const syncState = useCallback((vault: SunderVault) => {
+  const syncState = useCallback(() => {
+    const vault = engineRef.current;
+    if (!vault) return;
+
     try {
       const rawMap = vault.get_identity_map();
       const newMap = new Map<string, string>();
-
       rawMap.forEach((value: string, key: string) => {
         newMap.set(key, value);
       });
 
       const rawRules = vault.get_rules();
 
-      setState((prev) => ({
-        ...prev,
-        map: newMap,
-        rules: rawRules || [],
-      }));
+      setMap(newMap);
+      setRules(rawRules || []);
     } catch (e) {
       console.error("Failed to sync state:", e);
     }
@@ -71,17 +60,14 @@ export function useSunder() {
         const vault = new wasm.SunderVault();
 
         if (mounted) {
-          setState((prev) => ({
-            ...prev,
-            engine: vault,
-            health: "active",
-          }));
-          syncState(vault);
+          engineRef.current = vault;
+          setHealth("active");
+          syncState();
         }
       } catch (err) {
         console.error("Sunder Engine failed to ignite:", err);
         if (mounted) {
-          setState((prev) => ({ ...prev, health: "error" }));
+          setHealth("error");
         }
       }
     }
@@ -92,82 +78,96 @@ export function useSunder() {
     };
   }, [syncState]);
 
-  const protect = useCallback(
-    (input: string) => {
-      if (!state.engine) return input;
-      const result = state.engine.protect(input);
-      syncState(state.engine);
-      return result;
-    },
-    [state.engine, syncState],
-  );
+  const protect = useCallback((input: string): string => {
+    const vault = engineRef.current;
+    if (!vault) return input;
+    return vault.protect(input);
+  }, []);
 
-  const reveal = useCallback(
-    (input: string) => {
-      if (!state.engine) return input;
-      return state.engine.reveal(input);
-    },
-    [state.engine],
-  );
+  const refreshMap = useCallback(() => {
+    syncState();
+  }, [syncState]);
+
+  const reveal = useCallback((input: string): string => {
+    const vault = engineRef.current;
+    if (!vault) return input;
+    return vault.reveal(input);
+  }, []);
 
   const clear = useCallback(() => {
-    if (!state.engine) return;
-    state.engine.clear_vault();
-    syncState(state.engine);
-  }, [state.engine, syncState]);
+    const vault = engineRef.current;
+    if (!vault) return;
+    vault.clear_vault();
+    syncState();
+  }, [syncState]);
 
   const configure = useCallback(
     (key: ConfigKey, value: boolean) => {
-      if (!state.engine) return;
-      const newConfig = { ...state.config, [key]: value };
-      setState((prev) => ({ ...prev, config: newConfig }));
-      state.engine.configure(
+      const vault = engineRef.current;
+      if (!vault) return;
+      const newConfig = { ...config, [key]: value };
+      setConfig(newConfig);
+      vault.configure(
         newConfig.identity,
         newConfig.contact,
         newConfig.technical,
       );
     },
-    [state.engine, state.config],
+    [config],
   );
 
   const addRule = useCallback(
     (pattern: string, category: string = "SECRET") => {
-      if (!state.engine) return;
-      const categoryRules = state.rules.filter((r) =>
+      const vault = engineRef.current;
+      if (!vault) return;
+      const categoryRules = rules.filter((r) =>
         r.replacement.startsWith(`[${category}_`),
       );
       const ruleIndex = categoryRules.length + 1;
       const replacement = `[${category}_${ruleIndex}]`;
-      state.engine.add_rule(pattern, replacement);
-      syncState(state.engine);
+      vault.add_rule(pattern, replacement);
+      syncState();
     },
-    [state.engine, state.rules, syncState],
+    [rules, syncState],
   );
 
   const removeRule = useCallback(
     (pattern: string) => {
-      if (!state.engine) return;
-      state.engine.remove_rule(pattern);
-      syncState(state.engine);
+      const vault = engineRef.current;
+      if (!vault) return;
+      vault.remove_rule(pattern);
+      syncState();
     },
-    [state.engine, syncState],
+    [syncState],
   );
 
-  // Memoize return object to prevent unnecessary re-renders
   return useMemo(
     () => ({
-      engine: state.engine,
-      health: state.health,
-      map: state.map,
-      rules: state.rules,
-      config: state.config,
+      engine: engineRef.current,
+      health,
+      map,
+      rules,
+      config,
       protect,
       reveal,
       clear,
       configure,
       addRule,
       removeRule,
+      refreshMap,
     }),
-    [state, protect, reveal, clear, configure, addRule, removeRule],
+    [
+      health,
+      map,
+      rules,
+      config,
+      protect,
+      reveal,
+      clear,
+      configure,
+      addRule,
+      removeRule,
+      refreshMap,
+    ],
   );
 }

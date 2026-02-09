@@ -1,17 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 interface VaultTableProps {
   map: Map<string, string>;
 }
 
 export function VaultTable({ map }: VaultTableProps) {
-  const [entries, setEntries] = useState<[string, string][]>([]);
-
-  useEffect(() => {
-    setEntries(Array.from(map.entries()));
-  }, [map]);
+  const entries = Array.from(map.entries());
 
   if (entries.length === 0) {
     return (

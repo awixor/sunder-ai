@@ -1,7 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { Heartbeat } from "@/components/heartbeat";
 import { SplitPane } from "@/components/split-pane";
 import { SunderInput } from "@/components/sunder-input";
@@ -20,7 +19,6 @@ export default function Home() {
   const [processedText, setProcessedText] = useState("");
   const [autoReveal, setAutoReveal] = useState(false);
   const {
-    engine,
     health,
     map,
     rules,
@@ -31,15 +29,18 @@ export default function Home() {
     configure,
     addRule,
     removeRule,
+    refreshMap,
   } = useSunder();
 
-  useEffect(() => {
-    if (engine) {
-      setProcessedText(protect(input));
-    } else {
-      setProcessedText(input);
-    }
-  }, [input, engine, config, rules]);
+  const handleInputChange = useCallback(
+    (newInput: string) => {
+      setInput(newInput);
+      const protected_ = protect(newInput);
+      setProcessedText(protected_);
+      setTimeout(() => refreshMap(), 0);
+    },
+    [protect, refreshMap],
+  );
 
   const finalText = autoReveal ? reveal(processedText) : processedText;
 
@@ -59,6 +60,7 @@ export default function Home() {
               onPanic={() => {
                 clear();
                 setInput("");
+                setProcessedText("");
               }}
             />
             <div className="w-px h-6 bg-zinc-200 dark:bg-zinc-800" />
@@ -72,7 +74,7 @@ export default function Home() {
             left={
               <SunderInput
                 value={input}
-                onChange={setInput}
+                onChange={handleInputChange}
                 placeholder="Paste sensitive data here (emails, credit cards)..."
               />
             }
