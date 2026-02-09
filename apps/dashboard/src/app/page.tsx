@@ -7,6 +7,8 @@ import { SunderInput } from "@/components/SunderInput";
 import { SunderOutput } from "@/components/SunderOutput";
 import { useSunder } from "@/hooks/useSunder";
 
+import { ThemeToggle } from "@/components/ThemeToggle";
+
 export default function Home() {
   const [input, setInput] = useState("");
   const { engine, health } = useSunder();
@@ -14,7 +16,7 @@ export default function Home() {
   const sanitizedText = engine ? engine.protect(input) : input;
 
   return (
-    <main className="min-h-screen bg-zinc-50 p-12 bg-white dark:bg-black ">
+    <main className="min-h-screen bg-zinc-50 p-12 dark:bg-black ">
       <div className="max-w-5xl mx-auto space-y-8 ">
         <header className="flex items-center justify-between">
           <div>
@@ -23,7 +25,10 @@ export default function Home() {
             </h1>
             <p className="text-slate-500">Local-First Privacy Shield v0.1.0</p>
           </div>
-          <Heartbeat status={health} />
+          <div className="flex items-center gap-4">
+            <Heartbeat status={health} />
+            <ThemeToggle />
+          </div>
         </header>
       </div>
 
