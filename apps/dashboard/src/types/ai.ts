@@ -1,11 +1,11 @@
 // AI Service Types and Configuration
 
 export enum AIProvider {
-  OpenAI = "openai",
-  Grok = "grok",
-  Anthropic = "anthropic",
+  // OpenAI = "openai",
+  // Grok = "grok",
+  // Anthropic = "anthropic",
   Ollama = "ollama",
-  Custom = "custom",
+  // Custom = "custom",
 }
 
 export interface AIServiceConfig {
@@ -35,22 +35,22 @@ export interface AIResponse {
 }
 
 export const DEFAULT_AI_CONFIG: AIServiceConfig = {
-  provider: AIProvider.OpenAI,
-  model: "gpt-4o-mini",
+  provider: AIProvider.Ollama,
+  model: "llama3.2",
 };
 
 export const PROVIDER_ENDPOINTS: Record<AIProvider, string> = {
-  [AIProvider.OpenAI]: "https://api.openai.com/v1/chat/completions",
-  [AIProvider.Grok]: "https://api.x.ai/v1",
-  [AIProvider.Anthropic]: "https://api.anthropic.com/v1/messages",
+  // [AIProvider.OpenAI]: "https://api.openai.com/v1/chat/completions",
+  // [AIProvider.Grok]: "https://api.x.ai/v1",
+  // [AIProvider.Anthropic]: "https://api.anthropic.com/v1/messages",
   [AIProvider.Ollama]: "http://localhost:11434/api/chat",
-  [AIProvider.Custom]: "",
+  // [AIProvider.Custom]: "",
 };
 
 export const DEFAULT_MODELS: Record<AIProvider, string> = {
-  [AIProvider.OpenAI]: "gpt-4o-mini",
-  [AIProvider.Grok]: "grok-3-mini-fast-beta",
-  [AIProvider.Anthropic]: "claude-3-haiku-20240307",
+  // [AIProvider.OpenAI]: "gpt-4o-mini",
+  // [AIProvider.Grok]: "grok-3-mini-fast-beta",
+  // [AIProvider.Anthropic]: "claude-3-haiku-20240307",
   [AIProvider.Ollama]: "llama3.2",
-  [AIProvider.Custom]: "",
+  // [AIProvider.Custom]: "",
 };
