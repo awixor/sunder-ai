@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Shield } from "lucide-react";
 import type { UIMessage } from "@ai-sdk/react";
+import { Button } from "@/components/ui/button";
 
 interface MessageBubbleProps {
   message: UIMessage;
@@ -56,13 +57,15 @@ export function MessageBubble({
           )}
         </p>
         {hasProtection && (
-          <button
+          <Button
+            variant="inline"
+            size="sm"
             onClick={() => setShowOriginal(!showOriginal)}
-            className="mt-2 text-xs opacity-70 hover:opacity-100 flex items-center gap-1"
+            className="mt-2 text-xs p-0"
           >
             <Shield className="w-3 h-3" />
             {showOriginal ? "Show protected" : "Show original"}
-          </button>
+          </Button>
         )}
       </div>
     </div>

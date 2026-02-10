@@ -1,6 +1,7 @@
 "use client";
 
 import { Settings, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface ChatHeaderProps {
   modelName: string;
@@ -28,28 +29,23 @@ export function ChatHeader({
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <button
-          onClick={onToggleConfig}
-          className="flex items-center gap-2 px-3 py-1.5 text-sm rounded-lg border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-        >
+        <Button variant="outline" size="sm" onClick={onToggleConfig}>
           <Settings className="w-4 h-4" />
           {modelName}
-        </button>
+        </Button>
         {isLoading && (
-          <button
-            onClick={onStop}
-            className="px-3 py-1.5 text-sm rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-red-600 hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
-          >
+          <Button variant="danger" size="sm" onClick={onStop}>
             Stop
-          </button>
+          </Button>
         )}
-        <button
+        <Button
+          variant="danger"
+          size="icon"
           onClick={onClear}
-          className="p-2 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-zinc-500"
           title="Clear chat"
         >
           <Trash2 className="w-4 h-4" />
-        </button>
+        </Button>
       </div>
     </div>
   );

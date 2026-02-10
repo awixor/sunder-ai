@@ -1,6 +1,7 @@
 "use client";
 
 import { Send, Shield } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface ChatInputProps {
   value: string;
@@ -37,13 +38,13 @@ export function ChatInput({
           <Shield className="w-4 h-4 text-green-500" />
         </div>
       </div>
-      <button
+      <Button
         type="submit"
         disabled={!value.trim() || isLoading}
-        className="px-4 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="px-4 py-3 rounded-xl"
       >
         <Send className="w-5 h-5" />
-      </button>
+      </Button>
     </form>
   );
 }

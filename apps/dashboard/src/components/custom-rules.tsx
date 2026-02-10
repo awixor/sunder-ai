@@ -3,6 +3,7 @@
 import { useState, memo, useCallback } from "react";
 import { Plus, Trash, Shield, Lock, ChevronDown } from "lucide-react";
 import type { TokenCategory, CustomRule } from "@/types";
+import { Button } from "@/components/ui/button";
 
 interface CustomRulesProps {
   rules: CustomRule[];
@@ -52,13 +53,15 @@ const RuleItem = memo(function RuleItem({ rule, onRemove }: RuleItemProps) {
           </div>
         </div>
       </div>
-      <button
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={handleRemove}
-        className="text-zinc-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20"
+        className="text-zinc-400 hover:text-red-500 opacity-0 group-hover:opacity-100 p-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20"
         aria-label="Remove rule"
       >
         <Trash className="w-4 h-4" />
-      </button>
+      </Button>
     </div>
   );
 });
@@ -137,14 +140,10 @@ export const CustomRules = memo(function CustomRules({
             </select>
             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
           </div>
-          <button
-            onClick={handleAdd}
-            disabled={!pattern.trim()}
-            className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
-          >
+          <Button onClick={handleAdd} disabled={!pattern.trim()}>
             <Plus className="w-4 h-4" />
             Add Rule
-          </button>
+          </Button>
         </div>
       </div>
     </div>

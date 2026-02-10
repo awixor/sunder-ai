@@ -1,4 +1,5 @@
 import { AlertCircle, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface ChatErrorBannerProps {
   message: string;
@@ -12,12 +13,14 @@ export function ChatErrorBanner({ message, onDismiss }: ChatErrorBannerProps) {
       <div className="flex-1 text-sm text-red-700 dark:text-red-300">
         {message}
       </div>
-      <button
+      <Button
+        variant="inline"
+        size="icon"
         onClick={onDismiss}
-        className="text-red-400 hover:text-red-600 dark:hover:text-red-200"
+        className="text-red-400 hover:text-red-600 dark:hover:text-red-200 p-0"
       >
         <X className="w-4 h-4" />
-      </button>
+      </Button>
     </div>
   );
 }
