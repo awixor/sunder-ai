@@ -10,7 +10,7 @@ import { useSunder } from "@/context/sunder-context";
 
 const DEBOUNCE_MS = 150;
 
-export default function ShieldPage() {
+export function ShieldExample() {
   const [input, setInput] = useState("");
   const [processedText, setProcessedText] = useState("");
   const [autoReveal, setAutoReveal] = useState(false);
@@ -43,15 +43,13 @@ export default function ShieldPage() {
   const finalText = autoReveal ? reveal(processedText) : processedText;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 bg-white dark:bg-zinc-950 shadow-sm">
+      <div className="flex items-center justify-between mb-2">
         <div>
-          <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
-            Privacy Shield
-          </h2>
-          <p className="text-zinc-500 text-sm mt-1">
-            Paste sensitive data to redact before sharing with AI
-          </p>
+          <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+            Interactive Demo
+          </h3>
+          <p className="text-zinc-500 text-sm">Try it yourself locally</p>
         </div>
         <div className="flex items-center gap-3">
           <AutoRevealToggle enabled={autoReveal} onToggle={setAutoReveal} />
@@ -59,16 +57,18 @@ export default function ShieldPage() {
         </div>
       </div>
 
-      <SplitPane
-        left={
-          <SunderInput
-            value={input}
-            onChange={handleInputChange}
-            placeholder="Paste sensitive data here (emails, credit cards)..."
-          />
-        }
-        right={<SunderOutput value={finalText} />}
-      />
+      <div className="h-100">
+        <SplitPane
+          left={
+            <SunderInput
+              value={input}
+              onChange={handleInputChange}
+              placeholder="Paste sensitive data here (emails, credit cards)..."
+            />
+          }
+          right={<SunderOutput value={finalText} />}
+        />
+      </div>
     </div>
   );
 }

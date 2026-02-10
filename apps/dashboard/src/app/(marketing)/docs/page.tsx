@@ -1,3 +1,5 @@
+import { ShieldExample } from "@/components/marketing/shield-example";
+
 export default function DocsPage() {
   return (
     <div className="bg-white dark:bg-slate-950 min-h-screen py-24 transition-colors duration-300">
@@ -39,6 +41,11 @@ export default function DocsPage() {
               To use Sunder in your application, initialize the Sunder engine
               and pass your text through the `protect` method.
             </p>
+
+            <div className="my-8">
+              <ShieldExample />
+            </div>
+
             <pre className="bg-slate-100 dark:bg-slate-900 p-4 rounded-lg font-mono text-sm text-slate-800 dark:text-slate-200 overflow-x-auto">
               {`import { Sunder } from '@sunder-ai/core';
 

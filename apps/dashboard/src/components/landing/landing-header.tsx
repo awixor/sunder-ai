@@ -21,7 +21,7 @@ export function LandingHeader() {
           <ThemeToggle />
 
           <Link
-            href="/shield"
+            href="/chat"
             className="hidden md:inline-flex items-center justify-center px-4 py-2 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors"
           >
             Launch App

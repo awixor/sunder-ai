@@ -2,16 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Shield,
-  BarChart3,
-  Settings,
-  Database,
-  MessageSquare,
-} from "lucide-react";
+import { BarChart3, Settings, Database, MessageSquare } from "lucide-react";
 
 const navItems = [
-  { href: "/shield", label: "Shield", icon: Shield },
   { href: "/chat", label: "Chat", icon: MessageSquare },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/rules", label: "Rules", icon: Settings },
