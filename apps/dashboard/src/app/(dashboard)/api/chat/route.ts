@@ -33,14 +33,14 @@ interface ChatRequestBody {
 // ============================================================================
 
 const PROVIDER_BASE_URLS: Partial<Record<AIProvider, string>> = {
-  [AIProvider.Grok]: "https://api.x.ai/v1",
+  // [AIProvider.Grok]: "https://api.x.ai/v1",
   [AIProvider.Ollama]: "http://localhost:11434/v1",
   // OpenAI uses default SDK URL
 };
 
 const PROVIDER_ENV_VARS: Partial<Record<AIProvider, string>> = {
-  [AIProvider.OpenAI]: "OPENAI_API_KEY",
-  [AIProvider.Grok]: "XAI_API_KEY",
+  // [AIProvider.OpenAI]: "OPENAI_API_KEY",
+  // [AIProvider.Grok]: "XAI_API_KEY",
   // Ollama doesn't need an env var
 };
 
@@ -123,7 +123,7 @@ export async function POST(request: Request): Promise<Response> {
     const { messages, config } = body;
 
     // Resolve provider and model
-    const provider = config?.provider ?? AIProvider.OpenAI;
+    const provider = config?.provider ?? AIProvider.Ollama;
     const model = config?.model ?? DEFAULT_MODELS[provider];
 
     // Debug logging (remove in production)
