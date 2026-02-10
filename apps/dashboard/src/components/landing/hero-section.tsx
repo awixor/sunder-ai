@@ -233,7 +233,7 @@ export function HeroSection() {
             <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
           <a
-            href="https://github.com"
+            href="https://github.com/awixor/sunder-ai"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 px-8 py-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-semibold rounded-xl transition-all border border-slate-200 dark:border-slate-700 shadow-lg shadow-slate-200/50 dark:shadow-none"
