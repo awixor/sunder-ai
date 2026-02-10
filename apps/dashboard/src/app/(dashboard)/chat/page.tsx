@@ -21,6 +21,7 @@ export default function ChatPage() {
   });
   const [showConfig, setShowConfig] = useState(false);
   const [text, setText] = useState("");
+  const [isProtected, setIsProtected] = useState(true);
   const [originalContent, setOriginalContent] = useState<
     Record<string, string>
   >({});
@@ -60,7 +61,7 @@ export default function ChatPage() {
       if (!text.trim() || isLoading) return;
 
       const original = text.trim();
-      const protected_ = protect(original);
+      const protected_ = isProtected ? protect(original) : original;
 
       setText("");
       setError(null);
@@ -77,7 +78,7 @@ export default function ChatPage() {
         body: { config },
       });
     },
-    [text, isLoading, protect, sendMessage, config],
+    [text, isLoading, protect, sendMessage, config, isProtected],
   );
 
   const clearChat = () => {
@@ -131,7 +132,9 @@ export default function ChatPage() {
       <ChatInput
         value={text}
         isLoading={isLoading}
+        isProtected={isProtected}
         onChange={setText}
+        onToggleProtection={setIsProtected}
         onSubmit={handleSubmit}
       />
     </div>
