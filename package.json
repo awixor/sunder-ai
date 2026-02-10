@@ -8,7 +8,7 @@
     "lint": "turbo run lint",
     "test": "turbo run test",
     "clean": "turbo run clean",
-    "vercel-build": "turbo run build --filter=dashboard..."
+    "vercel-build": "rustup default stable && turbo run build --filter=dashboard..."
   },
   "devDependencies": {
     "turbo": "^2.1.0",
