@@ -17,8 +17,8 @@ dist-ssr/
 target/
 **/*.rs.bk
 
-# Sunder Core WASM
-packages/sunder-core/pkg/
+# Sunder Core WASM (Un-ignore for Vercel)
+# packages/sunder-core/pkg/
 
 # System
 .DS_Store
