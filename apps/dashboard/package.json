@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "vercel-build": "pnpm -w run vercel-build",
     "start": "next start",
     "lint": "eslint"
   },
