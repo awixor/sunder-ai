@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Loader2, MessageSquare, Trash2, Plus } from "lucide-react";
 import {
   ChatHeader,
@@ -12,9 +12,11 @@ import {
 } from "@/components/chat";
 import { useChatSession } from "@/hooks/use-chat-session";
 import { Button } from "@/components/ui/button";
+import { InlineConfirmation } from "@/components/ui/inline-confirmation";
 
 export default function ChatPage() {
   const { state, actions, chats } = useChatSession();
+  const [showClearConfirmation, setShowClearConfirmation] = useState(false);
 
   const {
     messages,
@@ -39,6 +41,7 @@ export default function ChatPage() {
     clearSession,
     loadSession,
     deleteChat,
+    clearAllChats,
     reveal,
   } = actions;
 
@@ -60,7 +63,7 @@ export default function ChatPage() {
           New Chat
         </Button>
 
-        <div className="flex-1 overflow-y-auto space-y-1">
+        <div className="flex-1 overflow-y-auto space-y-1 pr-2 scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-800">
           {chats.map((chat) => (
             <div
               key={chat.id}
@@ -78,12 +81,36 @@ export default function ChatPage() {
                   e.stopPropagation();
                   deleteChat(chat.id);
                 }}
-                className="opacity-0 group-hover:opacity-100 p-1 hover:text-red-500 transition-opacity"
+                className="opacity-0 group-hover:opacity-100 p-1 hover:text-red-500 transition-opacity h-6 w-6"
               >
                 <Trash2 className="w-3 h-3" />
               </Button>
             </div>
           ))}
+        </div>
+
+        <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800">
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-2 text-zinc-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors mb-2"
+            onClick={() => setShowClearConfirmation(true)}
+            disabled={chats.length === 0}
+          >
+            <Trash2 className="w-4 h-4" />
+            <span className="text-xs font-medium">Clear all history</span>
+          </Button>
+
+          <InlineConfirmation
+            isOpen={showClearConfirmation}
+            onConfirm={async () => {
+              await clearAllChats();
+              setShowClearConfirmation(false);
+            }}
+            onCancel={() => setShowClearConfirmation(false)}
+            description="This will permanently delete all your chat history. This action cannot be undone."
+            confirmLabel="Delete"
+            variant="destructive"
+          />
         </div>
       </div>
 
@@ -93,7 +120,6 @@ export default function ChatPage() {
           isLoading={isLoading}
           onToggleConfig={() => setShowConfig(!showConfig)}
           onStop={stop}
-          onClear={clearSession}
         />
 
         {showConfig && (

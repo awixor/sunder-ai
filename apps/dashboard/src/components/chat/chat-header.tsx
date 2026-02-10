@@ -1,6 +1,6 @@
 "use client";
 
-import { Settings, Trash2 } from "lucide-react";
+import { Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface ChatHeaderProps {
@@ -8,7 +8,6 @@ interface ChatHeaderProps {
   isLoading: boolean;
   onToggleConfig: () => void;
   onStop: () => void;
-  onClear: () => void;
 }
 
 export function ChatHeader({
@@ -16,7 +15,6 @@ export function ChatHeader({
   isLoading,
   onToggleConfig,
   onStop,
-  onClear,
 }: ChatHeaderProps) {
   return (
     <div className="flex items-center justify-between mb-4">
@@ -38,14 +36,6 @@ export function ChatHeader({
             Stop
           </Button>
         )}
-        <Button
-          variant="danger"
-          size="icon"
-          onClick={onClear}
-          title="Clear chat"
-        >
-          <Trash2 className="w-4 h-4" />
-        </Button>
       </div>
     </div>
   );

@@ -32,6 +32,7 @@ export interface ChatSessionActions {
   clearSession: () => void;
   loadSession: (chatId: string) => Promise<void>;
   deleteChat: (id: string) => Promise<void>;
+  clearAllChats: () => Promise<void>;
   reveal: (text: string) => string;
 }
 
@@ -77,6 +78,7 @@ export function useChatSession(): UseChatSessionReturn {
     saveChat: persistChat,
     loadChat,
     deleteChat,
+    clearAllChats,
   } = useChatHistory();
 
   const convertToChatMessages = useCallback(
@@ -272,6 +274,7 @@ export function useChatSession(): UseChatSessionReturn {
       clearSession,
       loadSession,
       deleteChat,
+      clearAllChats,
       reveal,
     },
     chats,
