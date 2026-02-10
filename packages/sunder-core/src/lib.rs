@@ -38,6 +38,8 @@ pub struct Analytics {
     pub ip_addr: usize,
     pub path: usize,
     pub secret: usize,
+    pub money: usize,
+    pub date: usize,
     pub custom: usize,
 }
 
@@ -198,6 +200,40 @@ impl SunderVault {
             }
         }
 
+        // Contact: Money / Currency amounts (e.g. $5,000 or €100.50)
+        if self.config.contact {
+            let money_regex = regex::Regex::new(r"(?i)[$€£¥]\s?\d[\d,]*\.?\d*(?:\s?(?:million|billion|mil|k|m|b))?\b|\b\d[\d,]*\.?\d*\s?(?:dollars?|euros?|pounds?|usd|eur|gbp)\b").unwrap();
+            let matches: Vec<String> = money_regex.find_iter(&result)
+                .map(|m| m.as_str().to_string())
+                .collect::<std::collections::HashSet<_>>()
+                .into_iter()
+                .collect();
+            
+            for money in matches {
+                let mut counter = self.counters.money;
+                let token = self.tokenize(&money, "MONEY_", &mut counter);
+                self.counters.money = counter;
+                result = result.replace(&money, &token);
+            }
+        }
+
+        // Identity: Date expressions (e.g. tomorrow, next Monday, Jan 15, 2024-01-15)
+        if self.config.identity {
+            let date_regex = regex::Regex::new(r"(?i)\b(?:tomorrow|yesterday|today|next\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday|week|month|year)|last\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday|week|month|year)|(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\s+\d{1,2}(?:,?\s+\d{4})?|\d{4}[-/]\d{2}[-/]\d{2}|\d{1,2}[-/]\d{1,2}[-/]\d{2,4})\b").unwrap();
+            let matches: Vec<String> = date_regex.find_iter(&result)
+                .map(|m| m.as_str().to_string())
+                .collect::<std::collections::HashSet<_>>()
+                .into_iter()
+                .collect();
+            
+            for date in matches {
+                let mut counter = self.counters.date;
+                let token = self.tokenize(&date, "DATE_", &mut counter);
+                self.counters.date = counter;
+                result = result.replace(&date, &token);
+            }
+        }
+
         result
     }
 
@@ -220,12 +256,15 @@ impl SunderVault {
     pub fn get_analytics(&self) -> JsValue {
         let analytics = Analytics {
             total: self.counters.email + self.counters.phone + self.counters.ip_addr + 
-                   self.counters.path + self.counters.secret + self.counters.custom,
+                   self.counters.path + self.counters.secret + self.counters.money +
+                   self.counters.date + self.counters.custom,
             email: self.counters.email,
             phone: self.counters.phone,
             ip_addr: self.counters.ip_addr,
             path: self.counters.path,
             secret: self.counters.secret,
+            money: self.counters.money,
+            date: self.counters.date,
             custom: self.counters.custom,
         };
         serde_wasm_bindgen::to_value(&analytics).unwrap()

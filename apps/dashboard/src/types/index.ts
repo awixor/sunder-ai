@@ -21,6 +21,8 @@ export interface Analytics {
   ip_addr: number;
   path: number;
   secret: number;
+  money: number;
+  date: number;
   custom: number;
 }
 
@@ -39,5 +41,7 @@ export const DEFAULT_ANALYTICS: Analytics = {
   ip_addr: 0,
   path: 0,
   secret: 0,
+  money: 0,
+  date: 0,
   custom: 0,
 };
