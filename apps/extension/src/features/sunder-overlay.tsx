@@ -1,14 +1,19 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { useAIInputTarget } from "../hooks/use-ai-target"
+import { useSunderCore } from "../hooks/use-sunder-core"
 
 const SunderOverlay = () => {
   const [isProtected, setIsProtected] = useState(false)
   const targetElement = useAIInputTarget()
+  const { isReady, protect } = useSunderCore()
   const isConnected = !!targetElement
 
   // Simple theme detection (can be expanded to observe DOM mutations on body class)
   const [isDark, setIsDark] = useState(false)
+
+  // Track cursor position to restore it after modification
+  const cursorRef = useRef<number>(0)
 
   useEffect(() => {
     // Check initial preference
@@ -40,18 +45,64 @@ const SunderOverlay = () => {
   }, [])
 
   useEffect(() => {
-    if (!targetElement || !isProtected) return
+    if (!targetElement || !isProtected || !isReady) return
 
     const handleInput = (e: Event) => {
-      // Use type assertion safely
+      // Simple debounce or just run? WASM is fast.
+      // Let's try direct.
       const target = e.target as HTMLElement
-      const value = (target as any).value || target.innerText || ""
-      // console.log("Sunder Intercept:", value.substring(0, 20) + "...")
+      let currentValue = ""
+
+      if (
+        target instanceof HTMLTextAreaElement ||
+        target instanceof HTMLInputElement
+      ) {
+        currentValue = target.value
+        cursorRef.current = target.selectionStart
+      } else {
+        currentValue = target.innerText
+        // Handling cursor in contenteditable is harder, skip for now
+      }
+
+      const protectedText = protect(currentValue)
+
+      if (protectedText !== currentValue) {
+        // Prevent infinite loop if we update value
+        // React overrides value settters, so we need to be careful.
+        // For now, let's just log or set value directly if possible.
+        // Setting value directly on controlled inputs often fails to update React state.
+        // We need to dispatch a change event after setting value.
+
+        // This is a naive implementation - better one involves dispatching input event
+        /*
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value")?.set;
+        if (nativeInputValueSetter && target instanceof HTMLTextAreaElement) {
+            nativeInputValueSetter.call(target, protectedText);
+            target.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        */
+
+        // For MVP: Just console log the sanitization
+        console.log("Sunder Sanitizing:", {
+          original: currentValue,
+          protected: protectedText
+        })
+
+        // If we want to replace, let's do it carefully
+        if (target instanceof HTMLTextAreaElement) {
+          // Updating value directly might conflict with React.
+          // But let's try setting it for now to see if it works.
+          // target.value = protectedText
+          // target.selectionStart = target.selectionEnd = cursorRef.current
+        }
+      }
     }
 
+    // Capture/Bubble phase matters. Let's use capture to intercept early?
+    // Or bubble to process after change.
     targetElement.addEventListener("input", handleInput)
     return () => targetElement.removeEventListener("input", handleInput)
-  }, [targetElement, isProtected])
+  }, [targetElement, isProtected, isReady, protect])
 
   return (
     <div
@@ -71,7 +122,8 @@ const SunderOverlay = () => {
 
       {/* Main Button */}
       <button
-        onClick={() => isConnected && setIsProtected(!isProtected)}
+        onClick={() => isReady && isConnected && setIsProtected(!isProtected)}
+        disabled={!isReady}
         style={{ pointerEvents: "auto" }}
         className={`
           group relative flex items-center justify-center w-14 h-14 rounded-full shadow-2xl transition-all duration-500 ease-out
@@ -83,9 +135,14 @@ const SunderOverlay = () => {
                 ? "bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 shadow-black/40 hover:border-gray-500"
                 : "bg-white border border-gray-200 shadow-gray-200/50 hover:border-gray-300"
           }
+          ${!isReady && isConnected ? "opacity-50 cursor-wait" : ""}
         `}
         title={
-          isProtected ? "Sunder: Protection Active" : "Sunder: Click to Protect"
+          !isReady
+            ? "Initializing Sunder Core..."
+            : isProtected
+              ? "Sunder: Protection Active"
+              : "Sunder: Click to Protect"
         }>
         {/* Glow Effect */}
         {isProtected && (
