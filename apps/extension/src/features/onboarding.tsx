@@ -8,7 +8,7 @@ export const Onboarding = () => {
   }
 
   return (
-    <div className="w-[350px] bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden flex flex-col font-sans h-[500px]">
+    <div className="w-[350px] bg-slate-50 dark:bg-slate-900 overflow-hidden flex flex-col font-sans">
       {/* Hero Section */}
       <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-4 bg-white dark:bg-slate-950">
         <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl flex items-center justify-center mb-2">

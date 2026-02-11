@@ -38,8 +38,7 @@ export const useInputProtection = (
   const protectRef = useRef(protect)
   protectRef.current = protect
 
-  const handleInput = useCallback((e: Event) => {
-    const target = e.target as HTMLElement
+  const applyProtection = useCallback((target: HTMLElement) => {
     let currentValue = ""
     let currentCursor = 0
 
@@ -81,10 +80,22 @@ export const useInputProtection = (
     }
   }, [])
 
+  const handleKeydown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === " " || e.key === "Enter") {
+        const target = e.target as HTMLElement
+        // Use requestAnimationFrame so the space/enter character is
+        // inserted into the value before we run protection
+        requestAnimationFrame(() => applyProtection(target))
+      }
+    },
+    [applyProtection]
+  )
+
   useEffect(() => {
     if (!targetElement || !isProtected || !isReady) return
 
-    targetElement.addEventListener("input", handleInput)
-    return () => targetElement.removeEventListener("input", handleInput)
-  }, [targetElement, isProtected, isReady, handleInput])
+    targetElement.addEventListener("keydown", handleKeydown)
+    return () => targetElement.removeEventListener("keydown", handleKeydown)
+  }, [targetElement, isProtected, isReady, handleKeydown])
 }
