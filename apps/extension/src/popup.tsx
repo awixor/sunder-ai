@@ -12,7 +12,7 @@ function IndexPopup() {
   }
 
   return (
-    <div className="w-[350px] bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden flex flex-col font-sans">
+    <div className="w-[350px] bg-slate-50 dark:bg-slate-900 overflow-hidden flex flex-col font-sans">
       {/* Header */}
       <div className="bg-white dark:bg-slate-950 p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
         <h1 className="text-xl font-bold bg-gradient-to-r from-emerald-500 to-green-600 bg-clip-text text-transparent">
