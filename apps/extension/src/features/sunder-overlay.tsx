@@ -1,20 +1,23 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
+
+import { useStorage } from "@plasmohq/storage/hook"
 
 import { Spinner } from "../components/ui/spinner"
 import { useAIInputTarget } from "../hooks/use-ai-target"
 import { useSunderCore } from "../hooks/use-sunder-core"
-import { useTheme } from "../hooks/use-theme"
 import { getCaretPosition, setCaretPosition } from "../utils/dom-utils"
 import { OverlayButton } from "./overlay/overlay-button"
 import { OverlayIcon } from "./overlay/overlay-icon"
 import { OverlayTooltip } from "./overlay/overlay-tooltip"
 
 const SunderOverlay = () => {
-  const [isProtected, setIsProtected] = useState(false)
+  const [isProtected, setIsProtected] = useStorage<boolean>(
+    `sunder-active-${window.location.hostname}`,
+    false
+  )
   const targetElement = useAIInputTarget()
   const { isReady, protect } = useSunderCore()
   const isConnected = !!targetElement
-  const isDark = useTheme()
 
   // Loading if either not connected (scanning) or not ready (WASM)
   const isLoading = !isConnected || !isReady
@@ -112,7 +115,6 @@ const SunderOverlay = () => {
         {/* Button */}
         <OverlayButton
           active={isProtected}
-          isDark={isDark}
           isReady={isReady} // Force button visible even if not ready, handled by icon swap
           onClick={() => !isLoading && setIsProtected(!isProtected)}
           className="opacity-100 scale-100 w-14 h-14" // Ensure always visible
@@ -120,12 +122,12 @@ const SunderOverlay = () => {
           {isLoading ? (
             <Spinner className="w-6 h-6 text-emerald-500" />
           ) : (
-            <OverlayIcon active={isProtected} isDark={isDark} />
+            <OverlayIcon active={isProtected} />
           )}
         </OverlayButton>
 
         {/* Tooltip - Only show when interactive */}
-        {!isLoading && <OverlayTooltip active={isProtected} isDark={isDark} />}
+        {!isLoading && <OverlayTooltip active={isProtected} />}
       </div>
     </div>
   )

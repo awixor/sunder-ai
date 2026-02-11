@@ -1,12 +1,6 @@
 import { cn } from "../../lib/utils"
 
-export const OverlayIcon = ({
-  active,
-  isDark
-}: {
-  active: boolean
-  isDark: boolean
-}) => {
+export const OverlayIcon = ({ active }: { active: boolean }) => {
   return (
     <div
       className={cn(
@@ -23,11 +17,7 @@ export const OverlayIcon = ({
         strokeLinejoin="round"
         className={cn(
           "w-7 h-7 transition-colors duration-300",
-          active
-            ? "text-white drop-shadow-md"
-            : isDark
-              ? "text-gray-300"
-              : "text-gray-600"
+          active ? "text-white drop-shadow-md" : "text-gray-100"
         )}>
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
         {active && (
