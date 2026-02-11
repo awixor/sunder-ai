@@ -77,6 +77,9 @@ pnpm dev
 
 # Run only the dashboard
 pnpm --filter dashboard dev
+
+# Run only the extension
+pnpm --filter @sunder/extension dev
 ```
 
 ### Building
@@ -86,6 +89,92 @@ Build all applications and packages:
 ```bash
 pnpm build
 ```
+
+## 🦙 Running Ollama Locally
+
+Sunder AI uses [Ollama](https://ollama.com/) as its default local AI provider. Follow these steps to get it running:
+
+### 1. Install Ollama
+
+```bash
+# macOS (Homebrew)
+brew install ollama
+
+# Or download from https://ollama.com/download
+```
+
+### 2. Start the Ollama server
+
+```bash
+ollama serve
+```
+
+By default, Ollama runs on `http://localhost:11434`.
+
+### 3. Pull a model
+
+```bash
+# Recommended for general use
+ollama pull llama3.2
+
+# Lightweight alternative
+ollama pull gemma3:4b
+```
+
+### 4. Configure CORS (required for browser access)
+
+The dashboard connects to Ollama from the browser, so CORS must be enabled:
+
+```bash
+# macOS / Linux
+OLLAMA_ORIGINS="*" ollama serve
+```
+
+Or set it permanently via environment variable:
+
+```bash
+# Add to ~/.zshrc or ~/.bashrc
+export OLLAMA_ORIGINS="*"
+```
+
+### 5. Verify
+
+Open the Sunder dashboard (`pnpm dev`), navigate to the chat page, and select your model. Messages will be processed locally.
+
+## 🧩 Testing the Browser Extension
+
+### Development Mode
+
+```bash
+pnpm --filter @sunder/extension dev
+```
+
+This starts the Plasmo dev server with hot reload.
+
+### Loading in Chrome
+
+1. Open `chrome://extensions`
+2. Enable **Developer mode** (top-right toggle)
+3. Click **Load unpacked**
+4. Select `apps/extension/build/chrome-mv3-dev` (for dev) or `apps/extension/build/chrome-mv3-prod` (for production build)
+
+### Testing the Overlay
+
+1. Navigate to a supported AI chat site (ChatGPT, Claude, Gemini, Perplexity, DeepSeek, or Copilot)
+2. The Sunder **shield button** appears in the bottom-right corner
+3. Click the shield to **enable protection** (turns green)
+4. Type sensitive data (e.g., `My email is test@example.com`) — it gets replaced with tokens like `[EMAIL_1]`
+5. Send the message — the AI responds using the token
+6. Click the **eye button** (appears above the shield) to **reveal** original values in the chat
+7. Click again to **hide** them back to tokens
+
+### Production Build
+
+```bash
+pnpm --filter @sunder/extension build
+```
+
+The production build strips hot reload and debug tools. Load from `apps/extension/build/chrome-mv3-prod`.
 
 ## 🔐 Privacy Model
 
