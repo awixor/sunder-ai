@@ -1,9 +1,9 @@
 {
-  "name": "extension",
+  "name": "@sunder/extension",
   "displayName": "Extension",
   "version": "0.0.1",
-  "description": "A basic Plasmo extension.",
-  "author": "Plasmo Corp. <foss@plasmo.com>",
+  "description": "sunder extension",
+  "author": "awixor",
   "scripts": {
     "dev": "plasmo dev",
     "build": "plasmo build",

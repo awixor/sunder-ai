@@ -4,6 +4,36 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Additional styles to support Shadow DOM isolation if needed */
+:host(plasmo-csui) {
+  display: block;
+  /* Full viewport overlay strategy */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2147483647;
+  pointer-events: none; /* Let clicks pass through empty areas */
+
+  /* Font reset */
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    "Noto Sans",
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol",
+    "Noto Color Emoji";
+}
+
 #plasmo-shadow-container {
   all: initial;
   box-sizing: border-box;
