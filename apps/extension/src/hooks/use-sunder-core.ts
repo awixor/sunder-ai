@@ -1,6 +1,6 @@
 // We import init and SunderVault dynamically because WASM needs async loading
 import init, { SunderVault } from "@sunder/core"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 import { useStorage } from "@plasmohq/storage/hook"
 
@@ -65,5 +65,12 @@ export const useSunderCore = () => {
     return vaultRef.current.reveal(text)
   }
 
-  return { isReady, protect, reveal }
+  const getIdentityMap = useCallback((): Map<string, string> => {
+    if (!vaultRef.current) return new Map<string, string>()
+
+    // WASM returns a js_sys::Map which IS a native JS Map
+    return vaultRef.current.get_identity_map() as Map<string, string>
+  }, [isReady])
+
+  return { isReady, protect, reveal, getIdentityMap }
 }
