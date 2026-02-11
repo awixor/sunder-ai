@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Bomb, Shield } from "lucide-react";
+import { Bomb, BookOpen, Shield } from "lucide-react";
 import { Github } from "@/components/icons";
 import Link from "next/link";
 
@@ -12,12 +12,12 @@ const footerLinks = [
     href: "https://github.com/awixor/sunder-ai",
     description: "View the source",
   },
-  // {
-  //   icon: BookOpen,
-  //   label: "Documentation",
-  //   href: "/docs",
-  //   description: "Learn more",
-  // },
+  {
+    icon: BookOpen,
+    label: "Documentation",
+    href: "/docs",
+    description: "Learn more",
+  },
   {
     icon: Bomb,
     label: "Nuke Data",
