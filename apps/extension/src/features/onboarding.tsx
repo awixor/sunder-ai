@@ -1,5 +1,4 @@
 import { useSunderSettings } from "../hooks/use-sunder-settings"
-import { cn } from "../lib/utils"
 
 export const Onboarding = () => {
   const { setSettings } = useSunderSettings()
