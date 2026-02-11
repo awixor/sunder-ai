@@ -35,37 +35,35 @@ export function SettingToggle({
           !active &&
           "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-emerald-800 cursor-pointer"
       )}>
-      <div className="flex flex-col items-start gap-0.5">
-        <div className="flex items-center gap-2">
-          <span
-            className={cn(
-              "font-semibold text-sm text-start",
-              disabled && "text-slate-400 dark:text-slate-600",
-              !disabled && active && "text-emerald-900 dark:text-emerald-400",
-              !disabled && !active && "text-slate-700 dark:text-slate-300"
-            )}>
-            {label}
-          </span>
-          {badge && (
-            <span className="p-0.5 text-[8px] uppercase tracking-wider rounded bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700">
-              {badge}
-            </span>
-          )}
-        </div>
+      <div className="flex flex-col items-start gap-0.5 flex-1 mr-4">
         <span
           className={cn(
-            "text-xs text-left",
+            "font-semibold text-sm text-start",
+            disabled && "text-slate-400 dark:text-slate-600",
+            !disabled && active && "text-emerald-900 dark:text-emerald-400",
+            !disabled && !active && "text-slate-700 dark:text-slate-300"
+          )}>
+          {label}
+        </span>
+        <span
+          className={cn(
+            "text-xs text-left break-words",
             disabled
               ? "text-slate-400 dark:text-slate-600"
               : "text-slate-500 dark:text-slate-500"
           )}>
           {description}
         </span>
+        {badge && (
+          <span className="inline-block mt-1 px-1.5 py-0.5 text-[10px] uppercase tracking-wider rounded bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 font-medium">
+            {badge}
+          </span>
+        )}
       </div>
 
       <div
         className={cn(
-          "w-10 h-6 rounded-full p-1 transition-colors duration-200 flex items-center",
+          "w-10 h-6 rounded-full p-1 transition-colors duration-200 flex items-center shrink-0",
           disabled && "bg-slate-100 dark:bg-slate-800",
           !disabled && active && "bg-emerald-500",
           !disabled && !active && "bg-slate-300 dark:bg-slate-700"
