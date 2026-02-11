@@ -4,7 +4,14 @@ import type { PlasmoCSConfig, PlasmoGetStyle } from "plasmo"
 import SunderOverlay from "~features/sunder-overlay"
 
 export const config: PlasmoCSConfig = {
-  matches: ["<all_urls>"]
+  matches: [
+    "https://chatgpt.com/*",
+    "https://claude.ai/*",
+    "https://gemini.google.com/*",
+    "https://www.perplexity.ai/*",
+    "https://chat.deepseek.com/*",
+    "https://copilot.microsoft.com/*"
+  ]
 }
 
 export const getStyle: PlasmoGetStyle = () => {
