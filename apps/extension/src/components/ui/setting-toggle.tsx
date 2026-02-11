@@ -33,13 +33,13 @@ export function SettingToggle({
         // Inactive State (Enabled)
         !disabled &&
           !active &&
-          "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-slate-300 cursor-pointer"
+          "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-emerald-800 cursor-pointer"
       )}>
       <div className="flex flex-col items-start gap-0.5">
         <div className="flex items-center gap-2">
           <span
             className={cn(
-              "font-semibold text-sm",
+              "font-semibold text-sm text-start",
               disabled && "text-slate-400 dark:text-slate-600",
               !disabled && active && "text-emerald-900 dark:text-emerald-400",
               !disabled && !active && "text-slate-700 dark:text-slate-300"
@@ -47,7 +47,7 @@ export function SettingToggle({
             {label}
           </span>
           {badge && (
-            <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700">
+            <span className="p-0.5 text-[8px] uppercase tracking-wider rounded bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700">
               {badge}
             </span>
           )}
