@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 
 import { useAIInputTarget } from "../hooks/use-ai-target"
 import { useSunderCore } from "../hooks/use-sunder-core"
+import { getCaretPosition, setCaretPosition } from "../utils/dom-utils"
 
 const SunderOverlay = () => {
   const [isProtected, setIsProtected] = useState(false)
@@ -11,9 +12,6 @@ const SunderOverlay = () => {
 
   // Simple theme detection (can be expanded to observe DOM mutations on body class)
   const [isDark, setIsDark] = useState(false)
-
-  // Track cursor position to restore it after modification
-  const cursorRef = useRef<number>(0)
 
   useEffect(() => {
     // Check initial preference
@@ -48,58 +46,102 @@ const SunderOverlay = () => {
     if (!targetElement || !isProtected || !isReady) return
 
     const handleInput = (e: Event) => {
-      // Simple debounce or just run? WASM is fast.
-      // Let's try direct.
       const target = e.target as HTMLElement
       let currentValue = ""
+      let currentCursor = 0
 
+      // 1. Capture current state (Value + Cursor)
       if (
         target instanceof HTMLTextAreaElement ||
         target instanceof HTMLInputElement
       ) {
         currentValue = target.value
-        cursorRef.current = target.selectionStart
+        currentCursor = target.selectionStart || 0
       } else {
         currentValue = target.innerText
-        // Handling cursor in contenteditable is harder, skip for now
+        // For ContentEditable, we use our helper
+        const pos = getCaretPosition(target)
+        currentCursor = pos.end
       }
 
+      // 2. Process Text
       const protectedText = protect(currentValue)
 
+      // 3. Update if changed
       if (protectedText !== currentValue) {
-        // Prevent infinite loop if we update value
-        // React overrides value settters, so we need to be careful.
-        // For now, let's just log or set value directly if possible.
-        // Setting value directly on controlled inputs often fails to update React state.
-        // We need to dispatch a change event after setting value.
-
-        // This is a naive implementation - better one involves dispatching input event
-        /*
-        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value")?.set;
-        if (nativeInputValueSetter && target instanceof HTMLTextAreaElement) {
-            nativeInputValueSetter.call(target, protectedText);
-            target.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-        */
-
-        // For MVP: Just console log the sanitization
         console.log("Sunder Sanitizing:", {
           original: currentValue,
           protected: protectedText
         })
 
-        // If we want to replace, let's do it carefully
-        if (target instanceof HTMLTextAreaElement) {
-          // Updating value directly might conflict with React.
-          // But let's try setting it for now to see if it works.
-          // target.value = protectedText
-          // target.selectionStart = target.selectionEnd = cursorRef.current
+        // Calculate logic cursor position
+        // Heuristic: Shift cursor by the change in length.
+        // This assumes editing happened at/before the cursor, which is true for typing PII.
+        const delta = protectedText.length - currentValue.length
+        // Clamp to 0 and new length (though logic naturally handles it mostly)
+        const newCursor = Math.max(
+          0,
+          Math.min(protectedText.length, currentCursor + delta)
+        )
+
+        // A. Handle Input/TextArea
+        if (
+          target instanceof HTMLTextAreaElement ||
+          target instanceof HTMLInputElement
+        ) {
+          const setNativeValue = (
+            element: HTMLTextAreaElement | HTMLInputElement,
+            value: string
+          ) => {
+            const valueSetter = Object.getOwnPropertyDescriptor(
+              element,
+              "value"
+            )?.set
+            const prototype = Object.getPrototypeOf(element)
+            const prototypeValueSetter = Object.getOwnPropertyDescriptor(
+              prototype,
+              "value"
+            )?.set
+
+            if (prototypeValueSetter && valueSetter !== prototypeValueSetter) {
+              prototypeValueSetter.call(element, value)
+            } else if (valueSetter) {
+              valueSetter.call(element, value)
+            } else {
+              element.value = value
+            }
+
+            element.dispatchEvent(new Event("input", { bubbles: true }))
+          }
+
+          setNativeValue(target, protectedText)
+
+          // Restore calculated cursor
+          target.selectionStart = target.selectionEnd = newCursor
+        }
+
+        // B. Handle ContentEditable
+        else if (target.isContentEditable) {
+          // For ContentEditable, we replace innerText specifically to avoid HTML injection
+          // But this nukes the cursor, so we must restore it.
+
+          // Note: This might conflict with complex editors (ProseMirror/Slate) internal state,
+          // but it's the only way to "force" the sanitized text into the DOM view.
+          target.innerText = protectedText
+
+          // Restore calculated cursor
+          try {
+            setCaretPosition(target, newCursor)
+          } catch (err) {
+            console.error("Failed to set caret:", err)
+          }
+
+          // Dispatch input to notify framework
+          target.dispatchEvent(new Event("input", { bubbles: true }))
         }
       }
     }
 
-    // Capture/Bubble phase matters. Let's use capture to intercept early?
-    // Or bubble to process after change.
     targetElement.addEventListener("input", handleInput)
     return () => targetElement.removeEventListener("input", handleInput)
   }, [targetElement, isProtected, isReady, protect])
