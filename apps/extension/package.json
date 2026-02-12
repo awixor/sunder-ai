@@ -1,13 +1,14 @@
 {
   "name": "@sunder/extension",
-  "displayName": "Extension",
+  "displayName": "Sunder AI",
   "version": "0.0.1",
-  "description": "sunder extension",
+  "description": "Privacy-first, local-first AI toolset. Redact sensitive data before sending it to AI models.",
   "author": "awixor",
   "scripts": {
     "dev": "plasmo dev",
     "build": "plasmo build",
-    "package": "plasmo package"
+    "package": "plasmo package",
+    "build:edge": "plasmo build --target=edge-mv3 && node scripts/fix-edge-manifest.mjs"
   },
   "dependencies": {
     "@sunder/core": "workspace:*",

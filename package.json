@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
+    "build:edge": "turbo run build:edge",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "test": "turbo run test",

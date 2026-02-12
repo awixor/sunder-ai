@@ -5,6 +5,10 @@
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**", "pkg/**"]
     },
+    "build:edge": {
+      "dependsOn": ["^build"],
+      "outputs": ["build/edge-mv3-prod/**"]
+    },
     "dev": {
       "cache": false,
       "persistent": true
