@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Shield, Zap, ChevronRight } from "lucide-react";
+import { Shield, Zap, ChevronRight, Download } from "lucide-react";
 import { Github } from "@/components/icons";
 import Link from "next/link";
 
@@ -232,6 +232,15 @@ export function HeroSection() {
             Launch App
             <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
+          <a
+            href="https://microsoftedge.microsoft.com/addons/detail/extension/koihophibnbfcgkbnmfcdijcdpjmoocl"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-8 py-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-semibold rounded-xl transition-all border border-slate-200 dark:border-slate-700 shadow-lg shadow-slate-200/50 dark:shadow-none"
+          >
+            <Download className="w-5 h-5" />
+            Add to Edge
+          </a>
           <a
             href="https://github.com/awixor/sunder-ai"
             target="_blank"

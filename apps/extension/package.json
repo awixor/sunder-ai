@@ -1,7 +1,7 @@
 {
   "name": "@sunder/extension",
   "displayName": "Sunder AI",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Privacy-first, local-first AI toolset. Redact sensitive data before sending it to AI models.",
   "author": "awixor",
   "scripts": {
