@@ -19,9 +19,13 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
   ),
-  title: "Sunder - Local-First AI Privacy Firewall",
+  title: {
+    default: "Sunder - Local-First AI Privacy Firewall",
+    template: "%s | Sunder",
+  },
   description:
     "The local-first privacy firewall that scrubs PII from AI prompts before they ever leave your browser. Fast. Private. Open Source.",
+  applicationName: "Sunder AI",
   keywords: [
     "AI Privacy",
     "Local-first",
@@ -33,6 +37,13 @@ export const metadata: Metadata = {
     "LLM Security",
   ],
   authors: [{ name: "awixor" }],
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: "Sunder - Local-First AI Privacy Firewall",
     description:
@@ -40,14 +51,6 @@ export const metadata: Metadata = {
     url: "/",
     siteName: "Sunder AI",
     locale: "en_US",
-    images: [
-      {
-        url: "/og.png",
-        width: 1200,
-        height: 630,
-        alt: "Sunder AI",
-      },
-    ],
     type: "website",
   },
   twitter: {
